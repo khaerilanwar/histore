@@ -15,9 +15,9 @@
         rel="stylesheet">
 </head>
 
-<body class="font-poppins">
+<body class="font-poppins bg-gray-200">
 
-    <div class="antialiased bg-gray-200">
+    <div class="antialiased">
 
         <!-- Header Nav -->
         <x-cashier.header></x-cashier.header>
@@ -27,11 +27,28 @@
 
         <main class="px-5 lg:p-10 lg:ml-64 h-auto py-20 md:py-10">
             <h1 class="font-semibold text-xl mb-6 md:mt-8">{{ $title }}</h1>
+            @session('error')
+                <x-alert type="error">{{ $value }}</x-alert>
+            @endsession
+
+            @session('success')
+                <x-alert type="success">{{ $value }}</x-alert>
+            @endsession
             {{ $slot }}
         </main>
     </div>
 
+    <script>
+        const pesanAlerts = document.querySelectorAll('.alert')
+        pesanAlerts.forEach((alertMsg) => {
+            setTimeout(() => {
+                alertMsg.classList.add('hidden')
+            }, 2000)
+        })
+    </script>
+
     <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/sweet-alert.js') }}" type="module"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

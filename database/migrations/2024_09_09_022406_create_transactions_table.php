@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->dateTime('pending_time')->nullable();
             $table->foreignId('user_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->foreignId('member_id')->nullable()->constrained('members', 'id');
             $table->timestamps();
         });
     }

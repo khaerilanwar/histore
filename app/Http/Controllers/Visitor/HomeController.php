@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Visitor;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
-use Illuminate\Contracts\View\View;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('barcode')->unique();
             $table->string('name')->unique();
-            $table->integer('stock');
+            // $table->integer('stock');
             $table->integer('price');
+            $table->integer('price_discount')->nullable();
+            $table->integer('price_buy');
             $table->foreignId('category_id')->constrained('categories', 'id');
             $table->text('images');
             $table->timestamps();

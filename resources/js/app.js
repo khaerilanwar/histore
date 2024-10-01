@@ -2,6 +2,14 @@ import './bootstrap';
 import 'flowbite';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import Splide from '@splidejs/splide';
+import './sweet-alert';
+
+const alertMsgs = document.querySelectorAll('.alert')
+alertMsgs.forEach((alertMsg) => {
+    setTimeout(() => {
+        alertMsg.classList.add('hidden')
+    }, 2000)
+})
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.splide').forEach(function (element) {

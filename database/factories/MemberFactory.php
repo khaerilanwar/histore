@@ -16,8 +16,13 @@ class MemberFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = fake()->randomElement(['male', 'female']);
+
         return [
-            //
+            'name' => fake()->name($gender),
+            'no_hp' => '08' . fake()->randomElement([1, 2, 3, 5, 7, 8, 9]) . fake()->randomNumber(9),
+            'gender' => $gender,
+            'point' => 0
         ];
     }
 }

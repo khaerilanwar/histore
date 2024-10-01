@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Cashier;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
+use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
@@ -16,12 +18,15 @@ class DashboardController extends Controller
         $this->transactionModel = new Transaction();
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
+        // dd($this->transactionModel->totalSales());
+        // dd($this->transactionModel->dailySales()->get()->toArray());
         $limit = $request->query('limit', 5);
         $data = [
+            'user' => Auth::user(),
             'limit' => $limit,
-            'soldProducts' => $this->transactionModel->dailySales(date('2024-09-14'))->paginate($limit),
+            'soldProducts' => $this->transactionModel->dailySales()->paginate($limit),
             // Data Resume
             'sales' => $this->transactionModel->totalSales(),
             'transactions' => $this->transactionModel->totalTransactions(),

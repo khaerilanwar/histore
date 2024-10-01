@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Member;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class TransactionSeeder extends Seeder
         $allProducts = \App\Models\Product::all();
         $cashiers = \App\Models\User::where('role', 2)->get();
 
-        $countTransaction = 37;
+        $countTransaction = 45;
 
         for ($x = 0; $x < $countTransaction; $x++) {
 
@@ -43,19 +44,32 @@ class TransactionSeeder extends Seeder
             $current = fake()->dateTimeBetween('-1 day', '+1 day');
             $idTransaction = $current->format('m') . $current->format('d') . strtoupper(Str::random(4));
 
-            if ($x > 32) {
+            // if ($x < 3) {
+            //     // Data untuk tabel transactions
+            //     \App\Models\Transaction::create([
+            //         'id' => $idTransaction,
+            //         'total_price' => $totalPrice,
+            //         'transaction_date' => $current,
+            //         'payment_method' => 'cash',
+            //         'status' => 'pending',
+            //         'pending_time' => $current->modify(
+            //             '+' .
+            //                 fake()->numberBetween(8, 15) .
+            //                 ' minutes'
+            //         ),
+            //         'user_id' => fake()->randomElement($cashiers)->id,
+            //     ]);
+            // }
+            if ($x < 20) {
+                $membersId = Member::pluck('id')->all();
                 // Data untuk tabel transactions
                 \App\Models\Transaction::create([
                     'id' => $idTransaction,
                     'total_price' => $totalPrice,
                     'transaction_date' => $current,
                     'payment_method' => 'cash',
-                    'status' => 'pending',
-                    'pending_time' => $current->modify(
-                        '+' .
-                            fake()->numberBetween(8, 15) .
-                            ' minutes'
-                    ),
+                    'status' => 'success',
+                    'member_id' => fake()->randomElement($membersId),
                     'user_id' => fake()->randomElement($cashiers)->id,
                 ]);
             } else {

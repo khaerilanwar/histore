@@ -27,7 +27,7 @@
                             class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-50 hover:text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">Sales</a>
                     </li>
                     <li>
-                        <a href="#"
+                        <a href="/cashier/sales/history"
                             class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-50 hover:text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">History</a>
                     </li>
                 </ul>
@@ -43,20 +43,33 @@
             <li>
                 <a href="/cashier/inventory"
                     class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">
-                    <ion-icon name="swap-horizontal"
+                    <ion-icon name="albums"
                         class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
                     <span class="ml-3">Inventory</span>
                 </a>
             </li>
         </ul>
+
         <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
             <li>
-                <a href="#"
-                    class="flex items-center p-2 text-base font-medium text-gray-50 rounded-lg transition duration-75 hover:bg-gray-100 hover:text-gray-900 group">
-                    <ion-icon name="log-out"
+                <a href="/cashier/profile"
+                    class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">
+                    <ion-icon name="person"
                         class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
-                    <span class="ml-3">Log Out</span>
+                    <span class="ml-3">Cashier Profile</span>
                 </a>
+            </li>
+            <li>
+                <form action="/authentication" method="post">
+                    @csrf
+                    @method('delete')
+                    <button type="submit"
+                        class="flex items-center p-2 text-base font-medium text-gray-50 rounded-lg transition duration-75 hover:bg-gray-100 hover:text-gray-900 group w-full">
+                        <ion-icon name="log-out"
+                            class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
+                        <span class="ml-3">Log Out</span>
+                    </button>
+                </form>
             </li>
         </ul>
     </div>

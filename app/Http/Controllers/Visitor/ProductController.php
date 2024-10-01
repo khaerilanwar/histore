@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -18,7 +19,7 @@ class ProductController extends Controller
         $this->categoryModel = new Category();
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->query('s');
         $limit = 12;
@@ -30,7 +31,7 @@ class ProductController extends Controller
         return view('visitor.products', $data);
     }
 
-    public function byCategory(Request $request, string $category)
+    public function byCategory(Request $request, string $category): View
     {
         $search = $request->query('s');
         $limit = 12;

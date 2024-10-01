@@ -1,4 +1,5 @@
 <x-cashier.layout>
+
     <x-slot:title>Sales</x-slot:title>
 
     <div class="grid grid-cols-12 gap-6">
@@ -8,7 +9,13 @@
                 <form class="flex items-center" method="POST" action="/cashier/sales/scan-product">
                     @csrf
                     <label for="barcode" class="sr-only">Scan here</label>
-                    <input type="hidden" name="bon" value="{{ $bon }}">
+                    <input type="hidden" name="nomor_bon" value="{{ $bon }}">
+                    @if ($transaction)
+                        <input type="hidden" name="id-last-product"
+                            value="{{ $transaction->transactionProducts[count($transaction->transactionProducts) - 1]->product->id }}">
+                        <input type="hidden" name="quantity-last-product"
+                            value="{{ $transaction->transactionProducts[count($transaction->transactionProducts) - 1]->quantity }}">
+                    @endif
                     <input value="{{ request('s') }}" type="text" name="barcode" id="barcode"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full ps-5 p-2"
                         placeholder="Scan product here!" required="" autocomplete="off" autofocus>
@@ -19,131 +26,140 @@
                 <x-cashier.table>
                     <x-slot:heading>
                         <tr>
-                            <th scope="col" class="px-6 py-3 rounded-tl-lg w-0">
+                            <th scope="col" class="px-3 py-3 rounded-tl-lg w-0">
                                 No.
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-3 py-3 text-center">
                                 Nama Produk
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-3 py-3">
                                 Harga
                             </th>
-                            <th scope="col" class="px-6 py-3 text-center">
+                            <th scope="col" class="px-3 py-3 text-center">
                                 Jumlah
                             </th>
-                            <th scope="col" colspan="2" class="px-6 py-3 rounded-tr-lg">
+                            <th scope="col" colspan="2" class="px-3 py-3 rounded-tr-lg">
                                 Sub Total
                             </th>
                         </tr>
                     </x-slot:heading>
 
-                    <x-slot:body>
-                        @foreach ($transaction as $saleProduct)
-                            <tr class="bg-white">
-                                <td class="px-6 py-2">
-                                    {{ $loop->iteration }}.
-                                </td>
-                                <th scope="row" class="px-6 py-2 font-medium text-gray-900 lg:hidden">
-                                    {{ Str::limit($saleProduct->product->name, 20, '...') }}
-                                </th>
-                                <th scope="row" class="px-6 py-2 font-medium text-gray-900 hidden lg:table-cell">
-                                    {{ $saleProduct->product->name }}
-                                </th>
-                                <td class="px-6 py-2" id="harga-produk-{{ $saleProduct->product->id }}">
-                                    Rp {{ number_format($saleProduct->product->price, 0, ',', '.') }}
-                                </td>
-                                <td class="px-6 py-2">
-                                    <form class="max-w-xs mx-auto">
-                                        <div class="relative flex items-center justify-center">
-                                            <button onclick="decrementStock(this)" type="button" id="decrement-button"
-                                                data-input-counter-decrement="input-stock-{{ $saleProduct->product->id }}"
-                                                class="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 focus:ring-2 focus:outline-none">
-                                                <ion-icon class="w-2.5 h-2.5 text-gray-900" name="remove"></ion-icon>
-                                            </button>
-                                            <input name="quantity" type="text"
-                                                id="input-stock-{{ $saleProduct->product->id }}" data-input-counter
-                                                class="flex-shrink-0 text-gray-900 border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
-                                                data-input-counter-min="0"
-                                                data-input-counter-max="{{ $saleProduct->product->stock }}"
-                                                value="{{ $saleProduct->quantity }}" required />
-                                            <button onclick="incrementStock(this)" type="button" id="increment-button"
-                                                data-input-counter-increment="input-stock-{{ $saleProduct->product->id }}"
-                                                class="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 focus:ring-2 focus:outline-none">
-                                                <ion-icon class="w-2.5 h-2.5 text-gray-900" name="add"></ion-icon>
-                                            </button>
-                                        </div>
-                                    </form>
+                    @if ($transaction)
+                        <x-slot:body>
+                            @foreach ($transaction->transactionProducts as $saleProduct)
+                                <tr class="bg-white">
+                                    <td class="px-3 py-2">
+                                        {{ $loop->iteration }}.
+                                    </td>
+                                    <th scope="row" class="px-3 py-2 font-medium text-gray-900 lg:hidden">
+                                        {{ Str::limit($saleProduct->product->name, 20, '...') }}
+                                    </th>
+                                    <th scope="row" class="px-3 py-2 font-medium text-gray-900 hidden lg:table-cell">
+                                        {{ $saleProduct->product->name }}
+                                    </th>
+                                    <td class="px-3 py-2" id="harga-produk-{{ $saleProduct->product->id }}">
+                                        Rp {{ number_format($saleProduct->product->price, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <form class="max-w-xs mx-auto">
+                                            <div class="relative flex items-center justify-center">
+                                                <button onclick="decrementStock(this)" type="button"
+                                                    id="decrement-button-{{ $saleProduct->product->id }}"
+                                                    data-input-counter-decrement="input-stock-{{ $saleProduct->product->id }}"
+                                                    class="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                                                    <ion-icon class="w-2.5 h-2.5 text-gray-900"
+                                                        name="remove"></ion-icon>
+                                                </button>
+                                                <input name="quantity" type="text"
+                                                    id="input-stock-{{ $saleProduct->product->id }}" data-input-counter
+                                                    class="flex-shrink-0 text-gray-900 border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                                    data-input-counter-min="0"
+                                                    data-input-counter-max="{{ $saleProduct->product->stock }}"
+                                                    value="{{ $saleProduct->quantity }}" />
+                                                <button onclick="incrementStock(this)" type="button"
+                                                    id="increment-button-{{ $saleProduct->product->id }}"
+                                                    data-input-counter-increment="input-stock-{{ $saleProduct->product->id }}"
+                                                    class="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                                                    <ion-icon class="w-2.5 h-2.5 text-gray-900"
+                                                        name="add"></ion-icon>
+                                                </button>
+                                            </div>
+                                        </form>
 
+                                    </td>
+                                    <td class="px-3 py-2 subtotal-produk"
+                                        id="subtotal-produk-{{ $saleProduct->product->id }}">
+                                        Rp {{ number_format($saleProduct->subtotal, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-3">
+                                        <form action="/cashier/sales/remove-product" method="post">
+                                            @csrf
+                                            @method('delete')
+                                            <input type="hidden" name="id-transaksi-produk"
+                                                value="{{ $saleProduct->id }}">
+                                            <button type="submit">
+                                                <ion-icon class="text-red-600 text-2xl" name="close"></ion-icon>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </x-slot:body>
+
+                        <x-slot:footer>
+                            <tr class="font-semibold text-gray-900 text-base">
+                                <td></td>
+                                <th scope="row" class="px-3 py-3" colspan="2">Total</th>
+                                <td class="px-3 py-3 text-center" id="jumlah-produk">
+                                    {{ $transaction->transactionProducts->sum('quantity') }}
                                 </td>
-                                <td class="px-6 py-2 subtotal-produk"
-                                    id="subtotal-produk-{{ $saleProduct->product->id }}">
-                                    Rp {{ number_format($saleProduct->subtotal, 0, ',', '.') }}
-                                </td>
-                                <td class="px-3">
-                                    <form action="/cashier/sales/remove-product" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <input type="hidden" name="id-transaksi-produk"
-                                            value="{{ $saleProduct->id }}">
-                                        <button type="submit">
-                                            <ion-icon class="text-red-600 text-2xl" name="close"></ion-icon>
-                                        </button>
-                                    </form>
+                                <td class="px-3 py-3 total-belanja" colspan="2">
+                                    {{ 'Rp ' . number_format($transaction->transactionProducts->sum('subtotal'), 0, ',', '.') }}
                                 </td>
                             </tr>
-                        @endforeach
-                    </x-slot:body>
-
-                    <x-slot:footer>
-                        <tr class="font-semibold text-gray-900">
-                            <td></td>
-                            <th scope="row" class="px-6 py-3 text-base" colspan="2">Total</th>
-                            <td class="px-6 py-3 text-center" id="jumlah-produk">{{ $transaction->sum('quantity') }}
-                            </td>
-                            <td class="px-6 py-3 total-belanja">
-                                {{ 'Rp ' . number_format($transaction->sum('subtotal'), 0, ',', '.') }}
-                            </td>
-                        </tr>
-                    </x-slot:footer>
+                        </x-slot:footer>
+                    @endif
 
                 </x-cashier.table>
             </div>
         </section>
 
         <section class="col-span-4">
-            <p class="mb-4 font-medium">Member : </p>
-            <form class="flex items-center max-w-lg mx-auto mb-4">
+            <div class="flex justify-between">
+                <p class="mb-4 font-medium">Member : {{ Request::session()->get('member_name') }}</p>
+                @session('member_name')
+                    <form action="/cashier/sales/remove-member" method="post">
+                        @csrf
+                        @method('delete')
+                        <button type="submit"><ion-icon class="text-red-600 text-2xl" name="close"></ion-icon></button>
+                    </form>
+                @endsession
+            </div>
+            <form class="flex items-center max-w-lg mx-auto mb-4" method="POST" action="/cashier/sales/cek-member">
+                @csrf
                 <label for="voice-search" class="sr-only">Search</label>
                 <div class="relative w-full">
                     <input type="text" id="voice-search"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-5 p-2"
-                        placeholder="Input member" required />
+                        placeholder="Input member" name="no_hp" required autocomplete="off" />
                 </div>
                 <button type="submit"
                     class="inline-flex items-center py-2 px-3 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">Search
                 </button>
             </form>
 
-
             <ol class="space-y-2">
                 <li>
-                    <div class="w-full p-4 text-green-700 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:border-green-800 dark:text-green-400"
-                        role="alert">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-medium">Total Belanja</h3>
-                            <h3 class="font-medium total-belanja">
-                                {{ 'Rp ' . number_format($transaction->sum('subtotal'), 0, ',', '.') }}</h3>
-                        </div>
-                    </div>
+                    <x-cashier.sum-trans name-sum="paid-money" class="text-green-700 border-green-300 bg-green-50">
+                        <x-slot:title>Uang Konsumen</x-slot:title>
+                        <x-slot:value>Rp 0</x-slot:value>
+                    </x-cashier.sum-trans>
                 </li>
                 <li>
-                    <div class="w-full p-4 text-blue-700 bg-blue-100 border border-blue-300 rounded-lg dark:bg-gray-800 dark:border-blue-800 dark:text-blue-400"
-                        role="alert">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-medium">Uang Konsumen</h3>
-                            <h3 class="font-medium" id="paid-money">Rp 0</h3>
-                        </div>
-                    </div>
+                    <x-cashier.sum-trans name-sum="change-money" class="text-blue-700 bg-blue-100 border-blue-300">
+                        <x-slot:title>Uang Kembalian</x-slot:title>
+                        <x-slot:value>Rp 0</x-slot:value>
+                    </x-cashier.sum-trans>
                 </li>
             </ol>
 
@@ -188,12 +204,88 @@
                 @endforeach
             </div>
 
-            <div class="flex justify-center mt-8">
-                <button type="submit"
-                    class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-3 text-center me-2 mb-2 w-full">Bayar
-                    Sekarang</button>
+            <div class="flex justify-center mt-6">
+                <form action="/cashier/sales/finish-transaction" method="post" class="w-full"
+                    id="form-transaction">
+                    @csrf
+                    @if ($transaction)
+                        <input type="hidden" name="id-last-product"
+                            value="{{ $transaction->transactionProducts[count($transaction->transactionProducts) - 1]->product->id }}">
+                        <input type="hidden" name="quantity-last-product"
+                            value="{{ $transaction->transactionProducts[count($transaction->transactionProducts) - 1]->quantity }}">
+                    @endif
+                    <input type="hidden" name="nomor_bon" value="{{ $bon }}">
+                    <input type="hidden" name="totalPriceFinish">
+                    @session('member_id')
+                        <input type="hidden" name="member_id" value="{{ $value }}">
+                    @endsession
+                    <button data-modal-target="confirm-modal" data-modal-toggle="confirm-modal" type="button"
+                        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xl px-5 py-3 text-center me-2 mb-2 w-full">Bayar
+                        Sekarang</button>
+                </form>
             </div>
         </section>
     </div>
+
+
+    <!-- Main modal -->
+    <div id="confirm-modal" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Konfirmasi Transaksi
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="confirm-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    @session('member_name')
+                        <p class="font-medium mb-4">Member : {{ $value }}</p>
+                    @endsession
+                    <ul class="space-y-4 mb-4">
+                        <li>
+                            <x-cashier.sum-trans name-sum="total-belanja"
+                                class="text-gray-900 bg-gray-100 border-gray-300">
+                                <x-slot:title>Total Belanja</x-slot:title>
+                                <x-slot:value>{{ $transaction ? 'Rp ' . number_format($transaction->transactionProducts->sum('subtotal'), 0, ',', '.') : 'Rp 0' }}</x-slot:value>
+                            </x-cashier.sum-trans>
+                        </li>
+                        <li>
+                            <x-cashier.sum-trans name-sum="paid-money"
+                                class="text-green-700 border-green-300 bg-green-50">
+                                <x-slot:title>Uang Konsumen</x-slot:title>
+                                <x-slot:value>Rp 0</x-slot:value>
+                            </x-cashier.sum-trans>
+                        </li>
+                        <li>
+                            <x-cashier.sum-trans name-sum="change-money"
+                                class="text-blue-700 bg-blue-100 border-blue-300">
+                                <x-slot:title>Uang Kembalian</x-slot:title>
+                                <x-slot:value>Rp 0</x-slot:value>
+                            </x-cashier.sum-trans>
+                        </li>
+                    </ul>
+                    <button id="submit-trans"
+                        class="text-white inline-flex w-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Konfirmasi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </x-cashier.layout>

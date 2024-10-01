@@ -1,5 +1,3 @@
-const inputQuantities = document.querySelectorAll('input[name="quantity"]');
-
 /* Fungsi formatRupiah */
 function formatRupiah(angka, prefix) {
     var number_string = angka.replace(/[^,\d]/g, '').toString(),
@@ -38,14 +36,32 @@ function totalProduk() {
     return total;
 }
 
-for (const input of inputQuantities) {
-    input.addEventListener('change', function (e) {
+const inputQuantities = document.querySelectorAll('input[name="quantity"]');
+const quantityLastProducts = document.querySelectorAll('input[name="quantity-last-product"]');
+
+inputQuantities.forEach((item, index, array) => {
+    let idProduct = item.getAttribute('id').split('-')[2]
+    if (!(index === array.length - 1)) {
+        // disable input element
+        item.removeAttribute('required')
+        item.setAttribute('disabled', 'true')
+        // disable increment button
+        document.getElementById(`increment-button-${idProduct}`).setAttribute('disabled', 'true')
+        // disable decrement button
+        document.getElementById(`decrement-button-${idProduct}`).setAttribute('disabled', 'true')
+    }
+
+    item.addEventListener('change', function (e) {
         let quantity = parseInt(e.target.value);
         const totals = document.getElementsByClassName('total-belanja');
-        const idProduct = e.target.getAttribute('id').split('-')[2];
+        // const idProduct = e.target.getAttribute('id').split('-')[2];
         const subTotal = document.getElementById(`subtotal-produk-${idProduct}`);
         const jumlahProduk = document.getElementById('jumlah-produk');
-        console.log(quantity);
+
+
+        quantityLastProducts.forEach((item) => {
+            item.value = quantity
+        })
 
         subTotal.textContent = (parseInt(document.getElementById(`harga-produk-${idProduct}`).textContent.replace(/\D/g, '')) * quantity).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
@@ -55,7 +71,8 @@ for (const input of inputQuantities) {
         jumlahProduk.textContent = totalProduk();
 
     });
-}
+
+})
 
 function decrementStock(e) {
     let idProduct = e.getAttribute('data-input-counter-decrement').split('-')[2];
@@ -64,13 +81,15 @@ function decrementStock(e) {
     const subTotal = document.getElementById(`subtotal-produk-${idProduct}`);
     const totals = document.getElementsByClassName('total-belanja');
     const jumlahProduk = document.getElementById('jumlah-produk');
-    console.log(quantity);
 
     if (quantity >= 0) {
         subTotal.textContent = (hargaProduk * quantity).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         for (const total of totals) {
             total.textContent = totalBelanja().toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
+        quantityLastProducts.forEach((item) => {
+            item.value = quantity
+        })
         jumlahProduk.textContent = totalProduk() - 1;
     }
 }
@@ -79,14 +98,20 @@ function incrementStock(e) {
     let idProduct = e.getAttribute('data-input-counter-increment').split('-')[2];
     let hargaProduk = parseInt(document.getElementById(`harga-produk-${idProduct}`).textContent.replace(/\D/g, ''));
     let quantity = parseInt(document.getElementById(`input-stock-${idProduct}`).value) + 1;
+    let maxStock = parseInt(document.getElementById(`input-stock-${idProduct}`).getAttribute('data-input-counter-max'))
     const subTotal = document.getElementById(`subtotal-produk-${idProduct}`);
     const totals = document.getElementsByClassName('total-belanja');
     const jumlahProduk = document.getElementById('jumlah-produk');
 
-    subTotal.textContent = (hargaProduk * quantity).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    jumlahProduk.textContent = totalProduk() + 1;
-    for (const total of totals) {
-        total.textContent = totalBelanja().toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    if (totalProduk() != maxStock) {
+        subTotal.textContent = (hargaProduk * quantity).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        jumlahProduk.textContent = totalProduk() + 1;
+        for (const total of totals) {
+            total.textContent = totalBelanja().toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+        quantityLastProducts.forEach((item) => {
+            item.value = quantity
+        })
     }
 }
 
@@ -113,18 +138,38 @@ const buttonProcessMoney = document.getElementById('process-money');
 const buttonClearMoney = document.getElementById('clear-money');
 
 buttonClearMoney.addEventListener('click', function (e) {
-    const paidMoney = document.getElementById('paid-money');
+    const paidMoneys = document.getElementsByClassName('paid-money');
+    const changeMoneys = document.getElementsByClassName('change-money');
     const inputMoney = document.getElementById('input-uang');
     inputMoney.value = '';
-    paidMoney.textContent = 'Rp 0';
+    for (const changeMoney of changeMoneys) {
+        changeMoney.textContent = 'Rp 0';
+    }
+    for (const paidMoney of paidMoneys) {
+        paidMoney.textContent = 'Rp 0';
+    }
     inputMoney.removeAttribute('disabled');
 });
 
 buttonProcessMoney.addEventListener('click', function (e) {
-    const paidMoney = document.getElementById('paid-money');
+    const paidMoneys = document.getElementsByClassName('paid-money');
     const inputMoney = document.getElementById('input-uang');
+    const changeMoneys = document.getElementsByClassName('change-money');
+    const finishTotalPrice = document.querySelector('input[name="totalPriceFinish"]');
+    const totalShops = document.getElementsByClassName('total-belanja');
+    finishTotalPrice.value = totalBelanja()
+
     let valueMoney = parseInt(inputMoney.value.replace(/\D/g, ''));
+    let valueChange = valueMoney - totalBelanja()
 
     inputMoney.setAttribute('disabled', 'disabled');
-    paidMoney.textContent = valueMoney.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    for (const paidMoney of paidMoneys) {
+        paidMoney.textContent = valueMoney.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+    for (const changeMoney of changeMoneys) {
+        changeMoney.textContent = valueChange.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 })
+    }
+    for (const total of totalShops) {
+        total.textContent = totalBelanja().toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 })
+    }
 });

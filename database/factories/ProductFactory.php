@@ -18,14 +18,15 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $price = fake()->numberBetween(1, 17) * 1000;
         return [
             'barcode' => fake()->ean13(),
-            'name' => fake()->words(
+            'name' => fake()->unique()->words(
                 fake()->numberBetween(2, 5),
                 true
             ),
-            'stock' => fake()->numberBetween(1, 100),
-            'price' => fake()->numberBetween(5, 27) * 1000,
+            'price' => $price,
+            'price_buy' => 0.85 * $price,
             'category_id' => fake()->randomElement(Category::pluck('id')->toArray()),
             'images' =>
             implode(

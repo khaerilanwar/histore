@@ -19,7 +19,7 @@
         </x-cashier.card-resume>
 
         <x-cashier.card-resume>
-            <x-slot:title>Total Sold Products</x-slot:title>
+            <x-slot:title>Sold Products</x-slot:title>
             <x-slot:value>{{ number_format($sold, 0, ',', '.') }}</x-slot:value>
         </x-cashier.card-resume>
 
@@ -45,6 +45,7 @@
                     <x-slot:heading>
                         <tr>
                             <th scope="col" class="px-4 py-3 w-0">No.</th>
+                            <th scope="col" class="px-4 py-3 w-0 text-center">Barcode</th>
                             <th scope="col" class="px-4 py-3">Nama Produk</th>
                             <th scope="col" class="px-4 py-3">Kategori</th>
                             <th scope="col" class="px-4 py-3">Terjual</th>
@@ -58,20 +59,25 @@
                                 <td class="px-4 py-3">
                                     {{ $loop->iteration + (Request::query('page', 1) - 1) * $limit }}.
                                 </td>
-                                <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap ">
+                                <td class="px-4 py-3">
+                                    {{ $soldProduct->barcode }}
+                                </td>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap hidden lg:table-cell">
                                     {{ $soldProduct->nama_produk }}
                                 </th>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap lg:hidden">
+                                    {{ Str::limit($soldProduct->nama_produk, 20, ' ...') }}
+                                </th>
                                 <td class="px-4 py-3">
-                                    {{ $soldProduct->kategori }}
+                                    {{ $soldProduct->nama_kategori }}
                                 </td>
                                 <td class="px-4 py-3">
                                     {{ $soldProduct->terjual }}
                                 </td>
                                 <td class="px-4 py-3">
-                                    {{ $soldProduct->stock }}
-                                </td>
-                                <td class="px-4 py-3">
-                                    {{ $soldProduct->tanggal }}
+                                    {{ $soldProduct->stok_produk }}
                                 </td>
                             </tr>
                         @endforeach

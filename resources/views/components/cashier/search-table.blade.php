@@ -14,6 +14,6 @@
         @endif
         <input value="{{ request('s') }}" type="text" name="s" id="search"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full ps-10 p-2"
-            placeholder="Search" required="" autocomplete="off">
+            placeholder="Search" autocomplete="off">
     </div>
 </form>

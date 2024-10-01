@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Shop;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,10 +26,14 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'username' => fake()->unique()->userName(),
+            'nik' => fake()->randomNumber(8, true),
+            'email' => fake()->unique()->freeEmail(),
+            'no_hp' => '08' . fake()->randomElement([1, 2, 3, 5, 7, 8, 9]) . fake()->randomNumber(9),
+            'alamat' => fake()->address(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'role' => fake()->randomElement([1, 2]),
+            'status' => 'active'
         ];
     }
 
@@ -46,6 +51,7 @@ class UserFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'role' => 2,
+            'shop_id' => fake()->randomElement(Shop::all()->pluck('id')),
         ]);
     }
 
