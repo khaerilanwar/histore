@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\TransactionProduct;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
@@ -21,6 +22,7 @@ class TransactionController extends Controller
     protected $transactionProductModel;
     protected $productModel;
     protected $memberModel;
+    protected $shopModel;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class TransactionController extends Controller
         $this->transactionProductModel = new TransactionProduct();
         $this->productModel = new Product();
         $this->memberModel = new Member();
+        $this->shopModel = new Shop();
     }
 
     protected function _bonGenerator()
@@ -47,7 +50,6 @@ class TransactionController extends Controller
         // Jika ada transaksi yang masih proses transaksi
         if ($processTransaction) {
             $data = [
-                'user' => Auth::user(),
                 'bon' => $processTransaction->id,
                 'transaction' => $processTransaction
             ];
@@ -56,7 +58,6 @@ class TransactionController extends Controller
         // Jika ada transaksi pending lebih dari 10 menit
         elseif ($pending_transaction) {
             $data = [
-                'user' => Auth::user(),
                 'bon' => $pending_transaction->id,
                 'transaction' => $pending_transaction
             ];
@@ -64,7 +65,7 @@ class TransactionController extends Controller
 
         // Jika tidak ada transaksi yang statusnya masih proses ataupun pending
         else {
-            $data = ['user' => Auth::user(), 'bon' => $this->_bonGenerator(), 'transaction' => ''];
+            $data = ['bon' => $this->_bonGenerator(), 'transaction' => ''];
         }
 
         return view('cashier.sales', $data);
@@ -81,7 +82,7 @@ class TransactionController extends Controller
         // Mendapatkan data pada database
         $transactionProduct = $this->transactionProductModel->getTransactionProduct($nomor_bon, 'barcode', $barcode);
         $lastProduct = $this->transactionProductModel->getTransactionProduct($nomor_bon, 'product_id', $idLastProduct);
-        $product = $this->productModel->where('barcode', $barcode)->first();
+        $product = $this->shopModel->findProductBy('barcode', $barcode);
 
         // Mengecek jika tidak ada produk (transaksi baru)
         if ($idLastProduct && $quantityLastProduct) {
@@ -127,9 +128,9 @@ class TransactionController extends Controller
                 $this->transactionProductModel->create(
                     [
                         'transaction_id' => $nomor_bon,
-                        'product_id' => $product->id,
+                        'product_id' => $product->product->id,
                         'quantity' => 1,
-                        'subtotal' => $product->price,
+                        'subtotal' => $product->product->price,
                     ]
                 );
             } else {
@@ -178,7 +179,7 @@ class TransactionController extends Controller
             // Melakukan looping untuk produk terjual
             foreach ($transaction->transactionProducts as $item) {
                 // Mengurangi stock produk pada tabel produk
-                $this->productModel->find($item->product_id)->decrement('stock', $item->quantity);
+                $this->shopModel->findProductBy('id', $item->product_id)->decrement('stock', $item->quantity);
             }
 
             // Mengubah data pada tabel transaksi

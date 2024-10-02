@@ -3,7 +3,7 @@
         <div class="flex justify-start items-center">
             <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation"
                 aria-controls="drawer-navigation"
-                class="p-2 mr-2 text-gray-50 rounded-lg cursor-pointer lg:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-600 focus:ring-2 focus:ring-gray-100">
+                class="p-2 mr-2 text-gray-50 rounded-lg cursor-pointer xl:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-600 focus:ring-2 focus:ring-gray-100">
                 <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -14,11 +14,12 @@
             </button>
             <a href="/cashier" class="flex items-center justify-between mr-4">
                 <img src="{{ asset('img/logo.png') }}" class="mr-3 h-8" alt="HiStore Logo" />
-                <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Cashier</span>
+                <span
+                    class="self-center text-2xl font-semibold whitespace-nowrap text-white">{{ Auth::user()->role === 1 ? 'Administator' : 'Cashier' }}</span>
             </a>
         </div>
         <div class="flex items-center lg:order-2">
-            <span class="text-lg font-medium text-white">Store</span>
+            <span class="text-lg font-medium text-white">{{ Auth::user()->role === 1 ? 'Owner' : 'Store' }}</span>
         </div>
     </div>
 </nav>

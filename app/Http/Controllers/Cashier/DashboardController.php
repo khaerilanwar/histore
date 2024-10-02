@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Cashier;
 
+use App\Models\Shop;
+use App\Models\Product;
+use Illuminate\View\View;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     protected $transactionModel;
+    protected $shopModel;
 
     public function __construct()
     {
         $this->transactionModel = new Transaction();
+        $this->shopModel = new Shop();
     }
 
     public function index(Request $request): View
     {
-        // dd($this->transactionModel->totalSales());
-        // dd($this->transactionModel->dailySales()->get()->toArray());
         $limit = $request->query('limit', 5);
         $data = [
             'user' => Auth::user(),

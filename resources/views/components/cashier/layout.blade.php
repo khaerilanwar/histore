@@ -25,7 +25,7 @@
         <!-- Sidebar -->
         <x-cashier.sidebar></x-cashier.sidebar>
 
-        <main class="px-5 lg:p-10 lg:ml-64 h-auto py-20 md:py-10">
+        <main class="px-5 xl:p-10 xl:ml-64 h-auto py-20 md:py-10">
             <h1 class="font-semibold text-xl mb-6 md:mt-8">{{ $title }}</h1>
             @session('error')
                 <x-alert type="error">{{ $value }}</x-alert>

@@ -36,15 +36,26 @@ class Transaction extends Model
 
     public function getTransactionProcess()
     {
+        $user = Auth::user();
         return $this
+            ->with(['transactionProducts.product.stockshops' => function ($query) use ($user) {
+                $query
+                    ->where('shop_id', $user->shop_id);
+            }])
             ->where('status', 'process')
             ->where('user_id', Auth::user()->id)
             ->first();
     }
 
-    public function getPendingSaleMoreThanTenMinutes(): ?Transaction
+    public function getPendingSaleMoreThanTenMinutes()
     {
-        return $this->where('status', 'pending')
+        $user = Auth::user();
+        return $this
+            ->with(['transactionProducts.product.stockshops' => function ($query) use ($user) {
+                $query
+                    ->where('shop_id', $user->shop_id);
+            }])
+            ->where('status', 'pending')
             ->where('pending_time', '<=', Carbon::now()->subminutes(10))
             ->where('user_id', Auth::user()->id)
             ->first();

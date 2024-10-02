@@ -2,8 +2,8 @@
 
     <x-slot:title>Sales</x-slot:title>
 
-    <div class="grid grid-cols-12 gap-6">
-        <section class="col-span-8">
+    <div class="grid lg:grid-cols-12 gap-6">
+        <section class="lg:col-span-8">
             <h1 class="text-center font-medium mb-4">Nomor Bon : {{ $bon }}</h1>
             <div class="w-full mb-4">
                 <form class="flex items-center" method="POST" action="/cashier/sales/scan-product">
@@ -74,7 +74,7 @@
                                                     id="input-stock-{{ $saleProduct->product->id }}" data-input-counter
                                                     class="flex-shrink-0 text-gray-900 border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
                                                     data-input-counter-min="0"
-                                                    data-input-counter-max="{{ $saleProduct->product->stock }}"
+                                                    data-input-counter-max="{{ $saleProduct->product->stockshops->where('shop_id', Auth::user()->shop_id)->first()->stock }}"
                                                     value="{{ $saleProduct->quantity }}" />
                                                 <button onclick="incrementStock(this)" type="button"
                                                     id="increment-button-{{ $saleProduct->product->id }}"
@@ -124,7 +124,7 @@
             </div>
         </section>
 
-        <section class="col-span-4">
+        <section class="lg:col-span-4">
             <div class="flex justify-between">
                 <p class="mb-4 font-medium">Member : {{ Request::session()->get('member_name') }}</p>
                 @session('member_name')
