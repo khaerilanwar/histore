@@ -2,7 +2,7 @@ import './bootstrap';
 import 'flowbite';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 import Splide from '@splidejs/splide';
-import './sweet-alert';
+// import './sweet-alert';
 
 const alertMsgs = document.querySelectorAll('.alert')
 alertMsgs.forEach((alertMsg) => {

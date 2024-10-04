@@ -23,8 +23,6 @@ class DatabaseSeeder extends Seeder
     {
         // Membuat data shop dari seeeder
         $this->call(ShopSeeder::class);
-        // Membuat 1 user admin
-        User::factory(1)->admin()->create();
         // Membuat user dengan role kasir
         User::factory(3)->cashier()->create();
 
@@ -39,6 +37,18 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('sayang'),
                 'role' => 2,
                 'shop_id' => fake()->randomElement(Shop::all()->pluck('id'))
+            ]
+        );
+
+        User::create(
+            [
+                'name' => 'Hi Store Admin',
+                'nik' => 'admin',
+                'email' => 'khaerilanwar@gmail.com',
+                'no_hp' => '081942516636',
+                'alamat' => fake()->address(),
+                'password' => Hash::make('admin'),
+                'role' => 1,
             ]
         );
 

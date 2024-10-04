@@ -8,7 +8,7 @@
                     @endphp
                     @foreach ($images as $image)
                         <li class="splide__slide">
-                            <img src="{{ asset('storage/images/' . $image) }}" alt="logo" class="rounded-md">
+                            <img src="{{ asset('storage/images/' . $image) }}" alt="card product" class="rounded-md">
                         </li>
                     @endforeach
                 </ul>

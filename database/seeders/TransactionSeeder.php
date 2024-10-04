@@ -17,8 +17,9 @@ class TransactionSeeder extends Seeder
     {
         $allProducts = \App\Models\Product::all();
         $cashiers = \App\Models\User::where('role', 2)->get();
+        $shops = \App\Models\Shop::all()->pluck('id');
 
-        $countTransaction = 45;
+        $countTransaction = 1000;
 
         for ($x = 0; $x < $countTransaction; $x++) {
 
@@ -41,11 +42,12 @@ class TransactionSeeder extends Seeder
             $totalPrice = collect($soldProducts)->sum('subtotal');
 
             // Mendapatkan waktu sekarang dan membuat id transaksi
-            $current = fake()->dateTimeBetween('-1 day', '+1 day');
+            // $current = fake()->dateTimeBetween('-1 day', '+1 day');
+            $current = fake()->dateTimeThisYear(max: '+1 month');
             $idTransaction = $current->format('m') . $current->format('d') . strtoupper(Str::random(4));
 
             // if ($x < 3) {
-            //     // Data untuk tabel transactions
+            // Data untuk tabel transactions
             //     \App\Models\Transaction::create([
             //         'id' => $idTransaction,
             //         'total_price' => $totalPrice,
