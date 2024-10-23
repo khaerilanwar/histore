@@ -49,6 +49,14 @@
                         <span class="ml-3">Inventory</span>
                     </a>
                 </li>
+                <li>
+                    <a href="/cashier/member"
+                        class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">
+                        <ion-icon name="people-circle"
+                            class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
+                        <span class="ml-3">Member</span>
+                    </a>
+                </li>
             @endcan
 
             @can('isAdmin')
@@ -80,7 +88,7 @@
                     </button>
                     <ul id="dropdown-pages" class="hidden py-2 space-y-2">
                         <li>
-                            <a href="/admin/product/in"
+                            <a href="/admin/product/add"
                                 class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-50 hover:text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">Add
                                 Product</a>
                         </li>
@@ -95,11 +103,29 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="/admin/category"
+                        class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">
+                        <ion-icon name="book"
+                            class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
+                        <span class="ml-3">Category</span>
+                    </a>
+                </li>
             @endcan
         </ul>
 
         <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
-            @can('cashier')
+            @can('isAdmin')
+                <li>
+                    <a href="/admin/staff"
+                        class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">
+                        <ion-icon name="person"
+                            class="w-6 h-6 text-gray-50 transition duration-75 group-hover:text-gray-900"></ion-icon>
+                        <span class="ml-3">Staff</span>
+                    </a>
+                </li>
+            @endcan
+            @can('isCashier')
                 <li>
                     <a href="/cashier/profile"
                         class="flex items-center p-2 text-base font-medium text-white rounded-lg hover:text-gray-900 hover:bg-gray-100 group">

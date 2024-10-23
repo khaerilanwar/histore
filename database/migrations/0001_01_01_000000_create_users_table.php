@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('nik', 8)->unique();
-            $table->string('email')->unique();
-            $table->string('no_hp')->unique();
-            $table->string('alamat');
             $table->string('password');
             $table->integer('role')->default(2);
             $table->string('shop_id', 4)->nullable();
             $table->foreign('shop_id')->references('id')->on('shops');
+            $table->string('nik_ktp', 16)->nullable();
+            $table->foreign('nik_ktp')->references('nik')->on('staff');
             $table->enum('status', ['active', 'inactive']);
             $table->rememberToken();
             $table->timestamps();

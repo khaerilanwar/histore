@@ -3,7 +3,7 @@
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
         {{ $heading ?? '' }}
     </thead>
-    <tbody>
+    <tbody class="text-gray-900 font-medium">
         {{ $body ?? '' }}
     </tbody>
     @if ($footer ?? false)

@@ -34,6 +34,25 @@ class Transaction extends Model
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
 
+    public function getDataThisMonth()
+    {
+        $month = Carbon::now()->month;
+
+        return $this
+            ->whereMonth('transactions.transaction_date', $month)
+            ->where('status', 'success')
+            ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
+            ->join('products', 'transaction_products.product_id', '=', 'products.id')
+            ->selectRaw(
+                '
+                SUM(transaction_products.subtotal) as penjualan,
+                SUM((products.price_buy * transaction_products.quantity)) as modal,
+                SUM(transaction_products.subtotal - (products.price_buy * transaction_products.quantity)) as profit
+                '
+            )
+            ->first();
+    }
+
     public function getSalesMonthly()
     {
         $year = Carbon::now()->year;
@@ -42,7 +61,10 @@ class Transaction extends Model
             ->whereYear('transactions.transaction_date', $year)
             ->where('status', 'success')
             ->join('transaction_products', 'transactions.id', '=', 'transaction_products.transaction_id')
-            ->selectRaw('MONTH(transactions.transaction_date) as month, SUM(transaction_products.subtotal) as sales')
+            ->selectRaw(
+                'DATE_FORMAT(transactions.transaction_date, "%M") as month,
+                SUM(transaction_products.subtotal) as sales',
+            )
             ->groupBy('month')
             ->get();
     }

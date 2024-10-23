@@ -43,4 +43,11 @@ class UserController extends Controller
         // Melakukan redirect
         return redirect()->back()->with('success', 'Berhasil ganti kata sandi!');
     }
+
+    public function addUser(Request $request)
+    {
+        $data = [];
+
+        return view('');
+    }
 }

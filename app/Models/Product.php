@@ -37,6 +37,11 @@ class Product extends Model
         return $this->hasMany(StockShop::class, 'product_id');
     }
 
+    public function getProductByBarcode(string $barcode)
+    {
+        return $this->where('barcode', $barcode)->first();
+    }
+
     public function scopeByCategory(Builder $query, string $slug): void
     {
         $query->whereHas('category', function ($query) use ($slug) {
@@ -57,5 +62,14 @@ class Product extends Model
             ->whereAny(['products.name', 'products.barcode'], 'like', "%{$search}%")
             ->select('products.*', 'stock_shop.stock', 'stock_shop.shop_id')
             ->orderBy('products.name');
+    }
+
+    public function scopeMasterProduct(Builder $query, $search): void
+    {
+        $query
+            ->with('stockShops')
+            ->where('barcode', $search)
+            ->orWhere('name', 'like', "%{$search}%")
+            ->orderBy('name');
     }
 }

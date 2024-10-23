@@ -19,8 +19,10 @@ class DashboardController extends Controller
 
     public function index(Request $request): View
     {
-        dd($this->transactionModel->getSalesMonthly()->toArray());
-        $data = [];
+        $data = [
+            'chartData' => $this->transactionModel->getSalesMonthly(),        // output: 2D Array [month, sales] 
+            'dataThisMonth' => $this->transactionModel->getDataThisMonth()    // output: 1D Array [penjualan, modal, profit]
+        ];
         return view('admin.index', $data);
     }
 }

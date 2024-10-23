@@ -8,15 +8,15 @@
             <dl class="text-gray-900 divide-y divide-gray-200 mt-6">
                 <div class="flex flex-col pb-3">
                     <dt class="mb-1 text-gray-500">NIK - Nama Lengkap</dt>
-                    <dd class="text-lg font-semibold">{{ Auth::user()->nik . ' - ' . Auth::user()->name }}</dd>
+                    <dd class="text-lg font-semibold">{{ Auth::user()->nik . ' - ' . Auth::user()->staff->name }}</dd>
                 </div>
                 <div class="flex flex-col py-3">
                     <dt class="mb-1 text-gray-500">Alamat Email</dt>
-                    <dd class="text-lg font-semibold">{{ Auth::user()->email }}</dd>
+                    <dd class="text-lg font-semibold">{{ Auth::user()->staff->email }}</dd>
                 </div>
                 <div class="flex flex-col py-3">
                     <dt class="mb-1 text-gray-500">Nomor Handphone</dt>
-                    <dd class="text-lg font-semibold">{{ Auth::user()->no_hp }}</dd>
+                    <dd class="text-lg font-semibold">{{ Auth::user()->staff->no_hp }}</dd>
                 </div>
                 <div class="flex flex-col pt-3">
                     <dt class="mb-1 text-gray-500">Jabatan - Toko</dt>

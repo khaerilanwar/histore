@@ -10,6 +10,13 @@ class Member extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'no_hp',
+        'gender',
+        'point'
+    ];
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

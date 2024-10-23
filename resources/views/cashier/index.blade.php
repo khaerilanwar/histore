@@ -6,21 +6,25 @@
         <x-cashier.card-resume>
             <x-slot:title>Total Sales</x-slot:title>
             <x-slot:value>{{ 'Rp. ' . number_format($sales, 0, ',', '.') }}</x-slot:value>
+            <ion-icon name="cash" class="w-8 h-8 md:hidden lg:block"></ion-icon>
         </x-cashier.card-resume>
 
         <x-cashier.card-resume>
             <x-slot:title>Total Transactions</x-slot:title>
             <x-slot:value>{{ number_format($transactions, 0, ',', '.') }}</x-slot:value>
+            <ion-icon name="bag" class="w-8 h-8 md:hidden lg:block"></ion-icon>
         </x-cashier.card-resume>
 
         <x-cashier.card-resume>
             <x-slot:title>Total Retur</x-slot:title>
             <x-slot:value>{{ number_format($retur, 0, ',', '.') }}</x-slot:value>
+            <ion-icon name="swap-horizontal" class="w-8 h-8 md:hidden lg:block"></ion-icon>
         </x-cashier.card-resume>
 
         <x-cashier.card-resume>
             <x-slot:title>Sold Products</x-slot:title>
             <x-slot:value>{{ number_format($sold, 0, ',', '.') }}</x-slot:value>
+            <ion-icon name="checkbox" class="w-8 h-8 md:hidden lg:block"></ion-icon>
         </x-cashier.card-resume>
 
     </div>

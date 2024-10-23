@@ -1,5 +1,3 @@
-{{-- @dd($notifications[4]->shop->toArray()) --}}
-
 <x-cashier.layout>
     <x-slot:title>Inventory</x-slot:title>
 
@@ -95,11 +93,13 @@
         </div>
     </div>
 
-    <x-cashier.modal modalId="notif-modal" title="Notifications">
+    <x-cashier.modal modalId="notif-modal" title="Notifications" max-width="max-w-2xl">
         @foreach ($notifications as $notification)
-            <li>
-                <x-cashier.detail-notif :$notification />
-            </li>
+            <ul class="my-4 space-y-3">
+                <li>
+                    <x-cashier.detail-notif :$notification />
+                </li>
+            </ul>
         @endforeach
     </x-cashier.modal>
 </x-cashier.layout>

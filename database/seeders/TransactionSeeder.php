@@ -19,7 +19,7 @@ class TransactionSeeder extends Seeder
         $cashiers = \App\Models\User::where('role', 2)->get();
         $shops = \App\Models\Shop::all()->pluck('id');
 
-        $countTransaction = 1000;
+        $countTransaction = 1500;
 
         for ($x = 0; $x < $countTransaction; $x++) {
 

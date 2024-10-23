@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +15,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $with = ['shop'];
+    protected $with = ['shop', 'staff'];
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +23,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'nik',
         'password',
+        'role',
+        'shop_id',
+        'nik_ktp',
+        'status'
     ];
 
     /**
@@ -56,6 +61,11 @@ class User extends Authenticatable
             ->first();
     }
 
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(Staff::class, 'nik_ktp', 'nik');
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
@@ -69,5 +79,16 @@ class User extends Authenticatable
     public function shop(): BelongsTo
     {
         return $this->belongsTo(Shop::class, 'shop_id', 'id');
+    }
+
+    public function scopeUserActive(Builder $query, $search): void
+    {
+        $query
+            ->where('status', 'active')
+            ->whereHas('staff', function (Builder $query) use ($search) {
+                $query
+                    ->where('users.nik', 'like', "%{$search}%")
+                    ->orWhere('name', 'like',  "%{$search}%");
+            });
     }
 }
